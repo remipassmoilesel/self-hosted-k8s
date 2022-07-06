@@ -1,7 +1,7 @@
 # Self-hosted Kubernetes cluster
 
-![Twitter Follow](https://img.shields.io/twitter/follow/rpassmoilesel?style=social)
 ![GitHub Repo stars](https://img.shields.io/github/stars/remipassmoilesel/self-hosted-k8s?style=social)
+![Twitter Follow](https://img.shields.io/twitter/follow/rpassmoilesel?style=social)
 
 An opinionated way to create a Kubernetes cluster for self-hosting, without cloud services.
 
