@@ -1,0 +1,29 @@
+---
+- name: Copy Project Contour and Cert Manager manifests
+  template:
+    src: "{{ item }}"
+    dest: "/tmp/{{ item }}"
+  with_items: "{{ contour_templates }}"
+  tags: contour
+
+- name: Apply Project Contour and Cert Manager manifests
+  shell: "kubectl apply -f /tmp/{{ item }}"
+  with_items: "{{ contour_templates }}"
+  tags: contour
+
+- name: Copy issuers manifests
+  template:
+    src: "{{ item }}"
+    dest: "/tmp/{{ item }}"
+  with_items: "{{ issuer_templates }}"
+  tags: contour
+
+# Issuers may fail the first time
+- name: Apply issuers manifests
+  shell: "kubectl apply -f /tmp/{{ item }}"
+  with_items: "{{ issuer_templates }}"
+  register: result
+  until: result.rc == 0
+  retries: 6
+  delay: 10
+  tags: contour

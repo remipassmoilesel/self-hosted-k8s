@@ -1,0 +1,32 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: httpbin
+  name: httpbin
+  labels:
+    app: httpbin
+  annotations:
+    kubernetes.io/ingress.class: contour
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  rules:
+    - host: my-hostname.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: httpbin
+                port:
+                  number: 80
+
+  # Optional, this backend will be used if no backend match
+  defaultBackend:
+    service:
+      name: httpbin
+      port:
+        number: 80

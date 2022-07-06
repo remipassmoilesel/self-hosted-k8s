@@ -1,0 +1,5 @@
+---
+- name: Fetch kube config
+  fetch:
+    src: "/root/.kube/config"
+    dest: ".kube/config"

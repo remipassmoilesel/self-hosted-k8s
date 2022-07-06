@@ -1,0 +1,10 @@
+---
+- name: Setup firewall
+  import_tasks: setup.yml
+  when: firewall.enabled
+  tags: ["firewall", "firewall-check"]
+
+- name: Check if sensible ports are not accessible from workstation
+  import_tasks: check.yml
+  when: firewall.check_sensible_ports
+  tags: ["firewall", "firewall-check"]

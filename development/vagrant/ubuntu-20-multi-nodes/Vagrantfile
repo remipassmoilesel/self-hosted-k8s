@@ -1,0 +1,70 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+box = "bento/ubuntu-20.04"
+
+cluster = [
+  { :cpus => 2, :mem => 2048 },
+  { :cpus => 2, :mem => 2048 },
+  { :cpus => 2, :mem => 2048 },
+  { :cpus => 2, :mem => 2048 },
+]
+
+# Insert public key if one found in this directory
+ssh_pub_key = ''
+if File.file?('id_rsa.pub')
+   ssh_pub_key = File.readlines('id_rsa.pub').first.strip
+end
+
+provisionner=<<-SHELL
+
+    set -x
+
+    # Update system
+    apt-get update && apt-get upgrade -y
+
+    # Install helpers
+    apt-get install -y vim net-tools sed curl wget byobu ranger
+
+    # Change default passwords
+    echo 'root:azerty' | chpasswd
+    echo 'ubuntu:azerty' | chpasswd
+
+    # Configure SSH
+    cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+    sed -i -E 's/#?PermitRootLogin.+/PermitRootLogin yes/g' /etc/ssh/sshd_config
+    sed -i -E 's/#?PasswordAuthentication.+/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    sed -i -E 's/#?UsePAM.+/UsePAM no/g' /etc/ssh/sshd_config
+
+    systemctl restart ssh
+
+    # Copy SSH key
+    echo "#{ssh_pub_key}" >> /root/.ssh/authorized_keys
+
+    # Show interfaces
+    ip a
+
+SHELL
+
+Vagrant.configure("2") do |config|
+    config.vm.box = box
+
+    cluster.each_with_index do |info , index|
+        hostname = "multi-node-vm-" + index.to_s
+        ip_addr = "192.168.56.#{index + 10}"
+
+        config.vm.define hostname do |cfg|
+            cfg.vm.provider :virtualbox do |vb, override|
+                override.vm.network :private_network, ip: "#{ip_addr}"
+                override.vm.hostname = hostname
+
+                vb.name = hostname
+                vb.customize ["modifyvm", :id, "--memory", info[:mem], "--cpus", info[:cpus], "--hwvirtex", "on"]
+            end
+
+        cfg.vm.provision "shell", inline: provisionner
+
+        end
+    end
+end

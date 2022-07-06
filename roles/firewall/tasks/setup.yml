@@ -1,0 +1,89 @@
+---
+- block:
+    - set_fact:
+        retry_count: "{{ 0 if retry_count is undefined else retry_count | int + 1 }}"
+      tags: firewall
+
+    - name: Reset firewall
+      ufw:
+        state: reset
+      tags: firewall
+
+    - name: Set logging
+      ufw:
+        logging: "{{ firewall.logging }}"
+      tags: firewall
+
+    - name: Set access to specified ports
+      ufw:
+        port: "{{ item.port }}"
+        rule: "{{ item.rule }}"
+        proto: "{{ item.proto }}"
+        delete: "{{ item.delete | default(false) }}"
+      with_items: "{{ firewall.allowed_ports }}"
+      tags: firewall
+
+    - name: Allow outgoing traffic
+      ufw:
+        policy: "allow"
+        direction: "outgoing"
+      tags: firewall
+
+    - name: Deny incoming traffic
+      ufw:
+        policy: "deny"
+        direction: "incoming"
+      tags: firewall
+
+    - name: Allow routed traffic
+      ufw:
+        policy: "allow"
+        direction: "routed"
+      tags: firewall
+
+    - name: Allow traffic from Kubernetes network private ranges
+      ufw:
+        rule: allow
+        src: "{{ item }}"
+      with_items:
+        - "{{ service_cidr }}"
+        - "{{ pod_network_cidr }}"
+      tags: firewall
+
+    - name: Allow traffic to Kubernetes network private ranges
+      ufw:
+        rule: allow
+        dest: "{{ item }}"
+      with_items:
+        - "{{ service_cidr }}"
+        - "{{ pod_network_cidr }}"
+      tags: firewall
+
+    - name: Allow full access between cluster nodes
+      ufw:
+        rule: allow
+        src: "{{ item }}"
+      with_items: "{{ groups['cluster'] }}"
+      tags: firewall
+
+    - name: Allow traffic from specified sources
+      ufw:
+        rule: allow
+        src: "{{ item.source }}"
+        delete: "{{ item.delete }}"
+      with_items: "{{ firewall.allow_sources }}"
+      tags: firewall
+
+    - name: Enable UFW
+      ufw:
+        state: "enabled"
+      retries: 3
+      delay: 3
+      tags: firewall
+
+  rescue:
+    - fail:
+        msg: Maximum retries reached
+      when: retry_count | int == 5
+
+    - include_tasks: setup.yml

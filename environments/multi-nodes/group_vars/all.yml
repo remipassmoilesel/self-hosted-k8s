@@ -1,0 +1,73 @@
+---
+# Change me !
+# Use `kubeadm token generate` to generate your own boostrap_token
+bootstrap_token: "jzlveg.6kzhv7j181y9057h"
+
+# The network interface that will be used for Kubernetes network
+flannel_interface: "eth1"
+
+# If true, the remote kube configuration will be fetch in ".kube" directory
+fetch_config: true
+
+# Any other additional opts you want to add.
+kubeadm_init_options: ""
+
+# If true, pods can be scheduled on master.
+allow_schedule_on_master: false
+
+# Additional options for Flannel
+flannel_cni_options: []
+
+# APT package version of Kubernetes
+kubernetes_version: "1.24.2-00"
+containerd_version: "1.6.6-1"
+
+# Kubernetes network parameters
+master_ip: "{{ groups['master'][0] }}"
+service_cidr: "10.96.0.0/12"
+pod_network_cidr: "10.244.0.0/16"
+
+# Firewall parameters
+# Firewall use UFW ansible module, see: https://docs.ansible.com/ansible/2.9/modules/ufw_module.html
+firewall:
+  # Enable firewall on master and nodes
+  enabled: true
+  # Log blocked requests
+  logging: on
+  # Check if sensible ports are closed after firewall setup
+  check_sensible_ports: true
+  # Add ports you want to enable here
+  allowed_ports:
+    - port: 22
+      rule: limit
+      proto: any
+    - port: 80
+      rule: allow
+      proto: tcp
+    - port: 443
+      rule: allow
+      proto: tcp
+  # You can allow full access from and to these IP / ranges
+  allow_sources: []
+
+# Enable or disable addons you need
+addons:
+  # If true, deploy metrics server
+  metrics_server: true
+
+  # If true, deploy Project Contour and cert-manager
+  projectcontour:
+    enabled: true
+    letsencrypt_email: someone@somewhere.net
+
+  # If true, deploy a virtual ip address with keepalived
+  # You can use this address for your DNS records
+  keepalived:
+    enabled: true
+    ip_address: "192.168.56.14"
+    broadcast: "192.168.56.255"
+    interface: "eth1"
+    secret: "a657cbcce10f4fe751180df4266c772114cde83455b1b3030517f0f0fac"
+
+  # If true, deploy Open EBS on the cluster
+  openebs: true

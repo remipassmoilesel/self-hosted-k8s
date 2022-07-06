@@ -1,0 +1,43 @@
+---
+- name: Reset Kubernetes components
+  shell: kubeadm reset --force --cri-socket=unix:///run/containerd/containerd.sock
+  register: reset_cluster
+
+- name: Template init script
+  template:
+    src: kubeadm-init.sh
+    dest: /tmp/kubeadm-init.sh
+
+- name: Init Kubernetes cluster
+  shell: bash /tmp/kubeadm-init.sh
+
+- name: Create Kubernetes config directory
+  file:
+    path: ".kube/"
+    state: directory
+
+- name: Copy admin.conf to home directory
+  copy:
+    src: "/etc/kubernetes/admin.conf"
+    dest: ".kube/config"
+    owner: "{{ ansible_user | default(ansible_user_id) }}"
+    group: "{{ ansible_user | default(ansible_user_id) }}"
+    mode: 0755
+    remote_src: true
+
+- name: Wait for API server readiness
+  ansible.builtin.uri:
+    url: "https://localhost:6443/healthz"
+    method: GET
+    validate_certs: false
+  register: result
+  until: result.status == 200
+  retries: 50
+  delay: 5
+
+- name: Allow pod scheduling on masters
+  when: allow_schedule_on_master
+  shell: "kubectl taint nodes --all {{ item }}-"
+  with_items:
+    - node-role.kubernetes.io/master
+    - node-role.kubernetes.io/control-plane

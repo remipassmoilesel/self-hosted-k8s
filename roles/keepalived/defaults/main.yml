@@ -1,0 +1,1 @@
+keepalived_state: "{{ 'MASTER' if groups['node'].index(inventory_hostname) == 0 else 'BACKUP' }}"

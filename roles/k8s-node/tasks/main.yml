@@ -1,0 +1,9 @@
+---
+- name: Check if kubelet.conf exists
+  stat:
+    path: "/etc/kubernetes/kubelet.conf"
+  register: kubelet_conf
+
+- name: Join Kubernetes cluster
+  import_tasks: join.yml
+  when: not kubelet_conf.stat.exists

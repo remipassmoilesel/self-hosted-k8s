@@ -1,0 +1,17 @@
+---
+- hosts: cluster
+  gather_facts: no
+  tasks:
+    - name: Reset Kubernetes component
+      shell: "kubeadm reset --force --cri-socket=unix:///run/containerd/containerd.sock"
+      ignore_errors: True
+
+    - name: Delete previous configuration
+      shell: "rm -rf /etc/kubernetes"
+      ignore_errors: True
+
+    - name: Reset firewall (UFW)
+      ufw:
+        state: reset
+
+    - reboot:

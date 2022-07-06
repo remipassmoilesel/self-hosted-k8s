@@ -1,0 +1,19 @@
+---
+- name: "Install keepalived"
+  apt:
+    name: keepalived
+    state: present
+  tags: keepalived
+
+- name: "Configure keepalived"
+  template:
+    src: keepalived.conf
+    dest: /etc/keepalived/keepalived.conf
+  tags: keepalived
+
+- name: "Enable keepalived"
+  systemd:
+    name: keepalived
+    state: restarted
+    enabled: yes
+  tags: keepalived

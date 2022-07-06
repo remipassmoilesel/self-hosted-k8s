@@ -1,0 +1,18 @@
+---
+- name: Copy flannel
+  template:
+    src: flannel.yml.j2
+    dest: /tmp/flannel.yml
+
+- name: Deploy flannel
+  shell: kubectl apply -f /tmp/flannel.yml
+  register: result
+  until: result.rc == 0
+  retries: 6
+  delay: 5
+
+- name: Flannel | Wait for flannel subnet.env file presence
+  wait_for:
+    path: /run/flannel/subnet.env
+    delay: 5
+    timeout: 600

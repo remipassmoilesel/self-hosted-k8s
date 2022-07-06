@@ -1,0 +1,66 @@
+---
+# Install prerequisites on all machines
+- hosts: cluster
+  any_errors_fatal: true
+  roles:
+    - { role: check-os }
+    - { role: safe-os-upgrade }
+    - { role: containerd }
+    - { role: k8s-preinstall }
+
+# Configure master
+- hosts: master
+  any_errors_fatal: true
+  roles:
+    - { role: k8s-master, tags: master }
+    - { role: k8s-flannel, tags: master }
+    - { role: k8s-fetch-config, tags: master }
+
+# Configure nodes
+- hosts: node
+  any_errors_fatal: true
+  roles:
+    - { role: k8s-node, tags: node }
+
+# Setup addons if any
+- hosts: master
+  any_errors_fatal: true
+  tasks:
+    - name: "Metrics server"
+      include_role:
+        name: k8s-metrics-server
+      when: addons.metrics_server
+      run_once: yes
+      tags: metrics-server
+
+    - name: "Project contour"
+      include_role:
+        name: k8s-contour
+      when: addons.projectcontour.enabled
+      run_once: yes
+      tags: contour
+
+    - name: "Open EBS"
+      include_role:
+        name: k8s-openebs
+      when: addons.openebs
+      run_once: yes
+      tags: openebs
+
+- hosts: node
+  any_errors_fatal: true
+  tasks:
+    - name: "Keepalived"
+      include_role:
+        name: keepalived
+      when: addons.keepalived.enabled
+      tags: keepalived
+
+# Setup firewall
+- hosts: cluster
+  any_errors_fatal: true
+  tasks:
+    - name: "Firewall"
+      include_role:
+        name: firewall
+      when: firewall.enabled

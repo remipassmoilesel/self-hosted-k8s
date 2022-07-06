@@ -1,0 +1,9 @@
+---
+- hosts: cluster
+  gather_facts: no
+  tasks:
+    - name: Reset firewall (UFW)
+      ufw:
+        state: reset
+
+    - reboot:

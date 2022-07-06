@@ -1,0 +1,11 @@
+---
+- name: Reset Kubernetes components
+  shell: kubeadm reset --force --cri-socket=unix:///run/containerd/containerd.sock
+
+- name: Template join script
+  template:
+    src: kubeadm-join.sh
+    dest: /tmp/kubeadm-join.sh
+
+- name: Join Kubernetes cluster
+  shell: bash /tmp/kubeadm-join.sh

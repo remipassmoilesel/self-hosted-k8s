@@ -1,0 +1,21 @@
+---
+- name: Install open-iscsi
+  apt:
+    name: open-iscsi
+    state: present
+
+- name: Enable iscsid
+  systemd:
+    name: iscsid
+    state: started
+    enabled: yes
+
+- name: Copy manifest
+  copy:
+    src: openebs-operator.yaml
+    dest: /tmp/openebs-operator.yaml
+  tags: openebs
+
+- name: Apply manifest
+  shell: kubectl apply -f /tmp/openebs-operator.yaml
+  tags: openebs

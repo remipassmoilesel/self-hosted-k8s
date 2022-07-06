@@ -1,0 +1,47 @@
+---
+- name: Install apt-transport-https
+  apt:
+    pkg:
+      - "ca-certificates"
+      - "gnupg"
+      - "apt-transport-https"
+    state: present
+
+- name: Add Docker APT key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+    filename: "docker"
+
+- name: Install containerd
+  apt:
+    pkg:
+      - "containerd.io={{ containerd_version }}"
+    state: present
+    update_cache: yes
+
+- name: Configure containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- template:
+    src: config.toml
+    dest: /etc/containerd/config.toml
+  register: configuration
+
+- name: Enable Containerd service
+  systemd:
+    name: containerd
+    state: started
+    enabled: yes
+
+- name: Restart Containerd
+  systemd:
+    name: containerd
+    state: restarted
+  when: configuration.changed

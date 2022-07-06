@@ -1,0 +1,7 @@
+---
+- name: Check that operating system is supported
+  assert:
+    that:
+      - ansible_distribution == "Ubuntu"
+      - ansible_distribution_major_version == "20"
+    fail_msg: "This playbook is designed to be used with Ubuntu Focal Fossa 20.04"

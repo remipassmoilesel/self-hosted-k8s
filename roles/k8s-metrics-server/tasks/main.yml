@@ -1,0 +1,10 @@
+---
+- name: Copy manifest
+  copy:
+    src: metrics-server.yaml
+    dest: /tmp/metrics-server.yaml
+  tags: metrics-server
+
+- name: Apply manifest
+  shell: kubectl apply -f /tmp/metrics-server.yaml
+  tags: metrics-server

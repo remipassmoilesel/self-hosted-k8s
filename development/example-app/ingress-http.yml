@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: httpbin
+  name: httpbin
+  labels:
+    app: httpbin
+spec:
+  rules:
+    - host: my-app.my-hostname.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: httpbin
+                port:
+                  number: 80
+
+  # Optional, this backend will be used if no backend match
+  defaultBackend:
+    service:
+      name: httpbin
+      port:
+        number: 80

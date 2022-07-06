@@ -1,0 +1,8 @@
+---
+- name: Check that sensible ports are not accessible from this host
+  shell: "nc -zvw1 {{ inventory_hostname }} {{ item }}"
+  with_items: "{{ sensible_ports }}"
+  register: result
+  failed_when: result.rc != 1
+  delegate_to: localhost
+  tags: ["firewall", "firewall-check"]

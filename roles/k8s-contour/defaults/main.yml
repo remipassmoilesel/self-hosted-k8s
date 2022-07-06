@@ -1,0 +1,9 @@
+---
+contour_templates:
+  - contour.yaml
+  - envoy-service.yaml.j2
+  - cert-manager.yaml
+
+issuer_templates:
+  - tls-issuer-production.yml.j2
+  - tls-issuer-staging.yml.j2

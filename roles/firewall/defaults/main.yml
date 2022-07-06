@@ -1,0 +1,13 @@
+---
+sensible_ports:
+  # Kubernetes API server
+  - 6443
+  # ETCD
+  - 2379
+  - 2380
+  # kubelet
+  - 10250
+  # kube-scheduler
+  - 10259
+  # kube-controller-manager
+  - 10257
