@@ -2,6 +2,9 @@
 
 # This script will be executed on each Compute Engine machine after bootstrap
 
+# CHANGE ME
+PASSWORD="d68b5367fa0a9452de936a22482404e123e52"
+
 set -x
 
 # Upgrade system
@@ -11,8 +14,8 @@ sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get update && sudo apt-get install -y vim net-tools sed curl wget byobu ranger
 
 # Change default passwords
-echo 'root:d68b5367fa0a9452de936a22482404e123e52' | sudo chpasswd
-echo 'ubuntu:d68b5367fa0a9452de936a22482404e123e52' | sudo chpasswd
+echo "root:$PASSWORD" | sudo chpasswd
+echo "ubuntu:$PASSWORD" | sudo chpasswd
 
 # Configure SSH
 sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak

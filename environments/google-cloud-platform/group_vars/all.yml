@@ -64,10 +64,6 @@ addons:
   # You can use this address for your DNS records
   keepalived:
     enabled: false
-    ip_address: "192.168.56.14"
-    broadcast: "192.168.56.255"
-    interface: "ens4"
-    secret: "a657cbcce10f4fe751180df4266c772114cde83455b1b3030517f0f0fac"
 
   # If true, deploy Open EBS on the cluster
   openebs: true

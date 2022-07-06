@@ -43,6 +43,7 @@ developed by big providers like Google Kubernetes Engine or others.**
 - [How to deploy a statefulset ?](#how-to-deploy-a-statefulset-)
 - [How to destroy a cluster ?](#how-to-destroy-a-cluster-)
 - [Troubleshooting](#troubleshooting)
+  - [How to check that all is ok ?](#how-to-check-that-all-is-ok-)
   - [Playbook failed !](#playbook-failed-)
 - [TODO](#todo)
 
@@ -304,6 +305,12 @@ Use destroy playbook:
 This will reset stop Kubernetes, delete configurations, and reset firewall.
 
 ## Troubleshooting
+
+### How to check that all is ok ?
+
+Deploy examples in folder `development`.
+
+After bootstrap a cluster can take several minutes to stabilize.
 
 ### Playbook failed !
 
