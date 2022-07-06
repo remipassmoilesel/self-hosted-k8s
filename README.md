@@ -18,10 +18,10 @@ Kubernetes cluster:
 
 This playbook has been tested:
 
-- With Vagrant virtual machines
+- With [Vagrant virtual machines](https://www.vagrantup.com/)
 - On bare metal computers
-- On OVH
-- On Google Cloud Compute Engine
+- On [OVH](https://www.ovhcloud.com/)
+- On [Google Cloud Compute Engine](https://cloud.google.com/compute/)
 
 This work was inspired by https://github.com/kairen/kubeadm-ansible
 
@@ -43,7 +43,7 @@ developed by big providers like Google Kubernetes Engine or others.**
 - [How to deploy a statefulset ?](#how-to-deploy-a-statefulset-)
 - [How to destroy a cluster ?](#how-to-destroy-a-cluster-)
 - [Troubleshooting](#troubleshooting)
-  - [Playbook failed](#playbook-failed)
+  - [Playbook failed !](#playbook-failed-)
 - [TODO](#todo)
 
 <!-- tocstop -->
