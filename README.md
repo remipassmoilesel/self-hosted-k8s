@@ -43,8 +43,9 @@ developed by big providers like Google Kubernetes Engine or others.**
 - [How to deploy a statefulset ?](#how-to-deploy-a-statefulset-)
 - [How to destroy a cluster ?](#how-to-destroy-a-cluster-)
 - [Troubleshooting](#troubleshooting)
-  - [How to check that all is ok ?](#how-to-check-that-all-is-ok-)
   - [Playbook failed !](#playbook-failed-)
+  - [How to check that all is ok ?](#how-to-check-that-all-is-ok-)
+  - [With Vagrant VMs, the API server restarts every 30 minutes](#with-vagrant-vms-the-api-server-restarts-every-30-minutes)
 - [TODO](#todo)
 
 <!-- tocstop -->
@@ -145,7 +146,10 @@ use the virtual IP address.
 
 ## Access to your cluster API from outside
 
-The recommended way is to create an SSH tunnel.
+If you enable the firewall, the Kubernetes API will not be accessible from outside the cluster (and
+that's usually a good thing)
+
+The recommended way to access API is to create an SSH tunnel.
 
 Copy the kubeconfig, change the host paramater:
 
@@ -306,12 +310,6 @@ This will reset stop Kubernetes, delete configurations, and reset firewall.
 
 ## Troubleshooting
 
-### How to check that all is ok ?
-
-Deploy examples in folder `development`.
-
-After bootstrap a cluster can take several minutes to stabilize.
-
 ### Playbook failed !
 
 - Try to run it twice or more
@@ -319,6 +317,16 @@ After bootstrap a cluster can take several minutes to stabilize.
 - Check prerequisites
 - Run `bootstrap.yaml` again
 - If problem persists, open an issue
+
+### How to check that all is ok ?
+
+Deploy examples in folder `development`.
+
+After bootstrap a cluster can take several minutes to stabilize.
+
+### With Vagrant VMs, the API server restarts every 30 minutes
+
+For unknown reasons, on some workstations network is unstable. If you have a clue, open an issue !
 
 ## TODO
 
