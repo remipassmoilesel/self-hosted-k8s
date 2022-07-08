@@ -1,5 +1,6 @@
 # Self-hosted Kubernetes cluster
 
+![Kubernetes version](https://img.shields.io/badge/Kubernetes%20version-1.24.2-brightgreen)
 ![GitHub Repo stars](https://img.shields.io/github/stars/remipassmoilesel/self-hosted-k8s?style=social)
 ![Twitter Follow](https://img.shields.io/twitter/follow/rpassmoilesel?style=social)
 
