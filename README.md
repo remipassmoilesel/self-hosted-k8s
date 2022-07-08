@@ -231,7 +231,7 @@ spec:
 
 After few minutes, your application will be available on `my-app.my-hostname.io` port 80.
 
-See [development/example-app](development/example-app) directory for a full working example.
+See [development/examples](development/examples) directory for a full working example.
 
 See [Project Contour](https://projectcontour.io/docs/v1.18.1/config/virtual-hosts/) documentation for
 more information.
@@ -282,7 +282,7 @@ Wait a few minutes, then check your service URL. You will get a security warning
 Once you are sure that all is working correctly, replace `cert-manager.io/cluster-issuer: letsencrypt-staging`
 by `cert-manager.io/cluster-issuer: letsencrypt-production`.
 
-See [development/example-app](development/example-app) directory for a full working example.
+See [development/examples](development/examples) directory for a full working example.
 
 See [Project Contour](https://projectcontour.io/docs/v1.18.1/config/virtual-hosts/) documentation for
 more information.
