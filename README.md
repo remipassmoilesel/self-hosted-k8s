@@ -14,7 +14,7 @@ Kubernetes cluster:
 
 - That does not rely on cloud services
 - With basic features: ingress controller, certificate manager, dynamic volume provisioning
-- With a several virtual machines or just one !
+- With several virtual machines or just one !
 
 This playbook has been tested:
 
@@ -36,8 +36,7 @@ developed by big providers like Google Kubernetes Engine or others.**
   - [Prerequisites](#prerequisites)
   - [Create an environment folder](#create-an-environment-folder)
   - [Deploy](#deploy)
-- [Which IP address should I use ?](#which-ip-address-should-i-use-)
-- [Access to your cluster API from outside](#access-to-your-cluster-api-from-outside)
+- [Access to your cluster API](#access-to-your-cluster-api)
 - [How to create an HTTP ingress ?](#how-to-create-an-http-ingress-)
 - [How to create an HTTP ingress with TLS support ?](#how-to-create-an-http-ingress-with-tls-support-)
 - [How to deploy a statefulset ?](#how-to-deploy-a-statefulset-)
@@ -54,7 +53,7 @@ developed by big providers like Google Kubernetes Engine or others.**
 
 This documentation assumes that you already have virtual machines:
 
-- With a public static IP address
+- With an accessible static IP address
 - Running Ubuntu Focal Fossa 20.04 LTS
 - With root SSH access without password
 
@@ -93,6 +92,7 @@ Then adapt your inventory file:
     [node]
     192.168.0.101
     192.168.0.102
+    192.168.0.103
     ...
 ```
 
@@ -132,29 +132,20 @@ Finally, you can deploy your cluster:
 
     $ ansible-playbook -i environments/production/inventory.cfg bootstrap.yaml
 
-Good to know:
+If something fail, try to run this playbook twice or more.
 
-- If something fail, you can run this playbook twice.
-- After a successful installation, a Kubernetes configuration will be available in `.kube` folder.
+## Access to your cluster API
 
-## Which IP address should I use ?
-
-If you use only one node, use its IP address.
-
-If you use several nodes, book a public IP address, enable keepalived in `group_vars/all.yml` address then
-use the virtual IP address.
-
-## Access to your cluster API from outside
-
-If you enable the firewall, the Kubernetes API will not be accessible from outside the cluster (and
-that's usually a good thing)
+By default a firewall is enabled, the Kubernetes API will not be accessible from outside the cluster (and
+that's usually a good thing).
 
 The recommended way to access API is to create an SSH tunnel.
 
-Copy the kubeconfig, change the host paramater:
+Copy the kubeconfig, change the host parameter:
 
     $ cd self-hosted-k8s
-    $ cp .kube/config/192.168.56.50/root/.kube/config config
+    $ cp .kube/config/192.168.56.50/root/.kube/config ~/.kube/config
+    $ nano ~/.kube/config
 
     # Replace this
     ...
@@ -169,9 +160,8 @@ Then open an SSH tunnel:
 
     $ ssh -L 6443:localhost:6443 $MASTER_IP
 
-Then use your config:
+You can now use your cluster:
 
-    $ export KUBECONFIG=/home/user/self-hosted-k8s/config
     $ kubectl get all --all-namespaces
 
 ## How to create an HTTP ingress ?
@@ -331,8 +321,8 @@ For unknown reasons, on some workstations network is unstable. If you have a clu
 ## TODO
 
 - Try a statefulset
-- Kubernetes upgrade
+- Kubernetes upgrade playbook
 - Addons upgrade (contour, ...)
-- Load testing with k6
+- Load testing
 - Issue for flannel/apparmor annotations issue (see roles/k8s-flannel/templates/flannel.yml.j2)
 - Try Kuma service mesh (https://kuma.io/)
